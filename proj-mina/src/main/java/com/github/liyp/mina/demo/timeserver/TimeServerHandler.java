@@ -1,4 +1,4 @@
-package com.github.liyp.mina.demo;
+package com.github.liyp.mina.demo.timeserver;
 
 import java.util.Date;
 

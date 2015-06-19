@@ -1,4 +1,4 @@
-package com.github.liyp.mina.buffer;
+package com.github.liyp.mina.demo.buffer;
 
 import java.nio.CharBuffer;
 
