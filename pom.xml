@@ -10,6 +10,7 @@
     <url>http://maven.apache.org</url>
     <modules>
         <module>proj-mina</module>
+        <module>proj-hibernate</module>
     </modules>
 
     <properties>
