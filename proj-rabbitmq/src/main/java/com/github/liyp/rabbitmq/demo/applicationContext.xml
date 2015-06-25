@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+    xsi:schemaLocation="
+            http://www.springframework.org/schema/beans
+                http://www.springframework.org/schema/beans/spring-beans.xsd
+            http://www.springframework.org/schema/context
+                http://www.springframework.org/schema/context/spring-context.xsd
+            http://www.springframework.org/schema/rabbit
+                http://www.springframework.org/schema/rabbit/spring-rabbit-1.0.xsd">
+
+    <!-- 连接服务配置 -->
+    <rabbit:connection-factory id="connectionFactory"
+        host="172.29.88.120" username="cloud" password="cloud" port="5672" />
+    <rabbit:admin connection-factory="connectionFactory" />
+
+    <!-- queue 队列声明 -->
+    <rabbit:queue id="queue_one" durable="false"
+        auto-delete="true" exclusive="false" name="queue_one" />
+
+    <!-- exchange queue binging key 绑定 -->
+    <rabbit:direct-exchange name="my-mq-exchange"
+        durable="false" auto-delete="true" id="my-mq-exchange">
+        <rabbit:bindings>
+            <rabbit:binding queue="queue_one" key="queue_one_key" />
+        </rabbit:bindings>
+    </rabbit:direct-exchange>
+
+    <!-- spring amqp默认的是jackson 的一个插件,目的将生产者生产的数据转换为json存入消息队列，由于fastjson的速度快于jackson,这里替换为fastjson的一个实现 -->
+    <bean id="jsonMessageConverter"
+        class="com.github.liyp.rabbitmq.demo.FastJsonMessageConverter"></bean>
+
+    <!-- spring template声明 -->
+    <rabbit:template exchange="my-mq-exchange" id="amqpTemplate"
+        connection-factory="connectionFactory" message-converter="jsonMessageConverter" />
+
+    <bean id="myMqGatway" class="com.github.liyp.rabbitmq.demo.MyMqGatway">
+        <property name="amqpTemplate" ref="amqpTemplate" />
+    </bean>
+
+    <bean id="queueOneListener" class="com.github.liyp.rabbitmq.demo.QueueOneListener" />
+    <!-- queue litener 观察 监听模式 当有消息到达时会通知监听在对应的队列上的监听对象 -->
+    <rabbit:listener-container
+        connection-factory="connectionFactory" acknowledge="auto"
+        task-executor="taskExecutor">
+        <rabbit:listener queues="queue_one" ref="queueOneListener" />
+    </rabbit:listener-container>
+
+    <bean id="taskExecutor"
+        class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+        <!-- 核心线程数 -->
+        <property name="corePoolSize" value="10" />
+        <!-- 最大线程数 -->
+        <property name="maxPoolSize" value="50" />
+        <!-- 队列最大长度 >=mainExecutor.maxSize -->
+        <property name="queueCapacity" value="1000" />
+        <!-- 线程池维护线程所允许的空闲时间 -->
+        <property name="keepAliveSeconds" value="300" />
+        <!-- 线程池对拒绝任务(无线程可用)的处理策略 -->
+        <property name="rejectedExecutionHandler">
+            <bean
+                class="java.util.concurrent.ThreadPoolExecutor$CallerRunsPolicy" />
+        </property>
+    </bean>
+</beans>
