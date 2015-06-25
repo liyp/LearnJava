@@ -11,6 +11,7 @@
     <modules>
         <module>proj-mina</module>
         <module>proj-hibernate</module>
+        <module>proj-rabbitmq</module>
     </modules>
 
     <properties>
