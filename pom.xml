@@ -12,6 +12,7 @@
         <module>proj-mina</module>
         <module>proj-hibernate</module>
         <module>proj-rabbitmq</module>
+        <module>proj-cassandra</module>
     </modules>
 
     <properties>
