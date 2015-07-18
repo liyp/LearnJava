@@ -13,31 +13,36 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <kundera.version>2.17</kundera.version>
+        <cassandra.driver>2.1.6</cassandra.driver>
     </properties>
 
-    <repository>
-        <id>sonatype-nexus</id>
-        <name>Kundera Public Repository</name>
-        <url>https://oss.sonatype.org/content/repositories/releases</url>
-        <releases>
-            <enabled>true</enabled>
-        </releases>
-        <snapshots>
-            <enabled>false</enabled>
-        </snapshots>
-    </repository>
-    <repository>
-        <id>riptano</id>
-        <name>riptano</name>
-        <url>http://mvn.riptano.com/content/repositories/public</url>
-    </repository>
-
     <dependencies>
-
         <dependency>
             <groupId>com.impetus.kundera.client</groupId>
             <artifactId>kundera-cassandra</artifactId>
-            <version>2.17</version>
+            <version>${kundera.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.impetus.kundera.client</groupId>
+            <artifactId>kundera-rdbms</artifactId>
+            <version>${kundera.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.impetus.kundera.client</groupId>
+            <artifactId>kundera-mongo</artifactId>
+            <version>${kundera.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.datastax.cassandra</groupId>
+            <artifactId>cassandra-driver-core</artifactId>
+            <version>${cassandra.driver}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.datastax.cassandra</groupId>
+            <artifactId>cassandra-driver-mapping</artifactId>
+            <version>${cassandra.driver}</version>
         </dependency>
 
         <dependency>

@@ -1,11 +1,12 @@
-package com.github.liyp.cassandra.jpa.demo;
+package com.github.liyp.cassandra.jpa.entities;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "users", schema = "test@cassandra_pu")
+@Table(name = "users")
 public class User {
     @Id
     private String userId;

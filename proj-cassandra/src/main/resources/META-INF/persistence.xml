@@ -1,18 +1,49 @@
-<persistence xmlns="http://java.sun.com/xml/ns/persistence"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<persistence xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://java.sun.com/xml/ns/persistence
     http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
     version="2.0">
+
+    <!-- Persistence unit for cassandra -->
     <persistence-unit name="cassandra_pu">
         <provider>com.impetus.kundera.KunderaPersistence</provider>
         <properties>
-            <property name="kundera.nodes" value="192.168.137.199" />
+            <property name="kundera.nodes" value="172.29.88.120" />
             <property name="kundera.port" value="9160" />
             <property name="kundera.keyspace" value="test" />
             <property name="kundera.dialect" value="cassandra" />
-            <property name="kundera.client.lookup.class"
-                value="com.impetus.client.cassandra.thrift.ThriftClientFactory" />
+            <property name="kundera.client.lookup.class" value="com.impetus.client.cassandra.thrift.ThriftClientFactory" />
             <property name="kundera.ddl.auto.prepare" value="update" />
+        </properties>
+    </persistence-unit>
+
+    <!-- Persistence unit for mysql -->
+    <persistence-unit name="mysql_pu">
+        <provider>com.impetus.kundera.KunderaPersistence</provider>
+        <properties>
+            <property name="kundera.client.lookup.class" value="com.impetus.client.rdbms.RDBMSClientFactory" />
+            <property name="hibernate.hbm2ddl.auto" value="update" />
+            <property name="hibernate.show_sql" value="false" />
+            <property name="hibernate.format_sql" value="false" />
+            <property name="dialect" value="org.openmeetings.app.hibernate.utils.MySQL5MyISAMDialect" />
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect" />
+            <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver" />
+            <property name="hibernate.connection.url" value="jdbc:mysql://192.168.137.199:3306/test" />
+            <property name="hibernate.connection.username" value="liyp" />
+            <property name="hibernate.connection.password" value="liyp" />
+        </properties>
+    </persistence-unit>
+
+    <!-- Persistence unit for mongo -->
+    <persistence-unit name="mongo_pu">
+        <provider>com.impetus.kundera.KunderaPersistence</provider>
+        <properties>
+            <property name="kundera.nodes" value="localhost" />
+            <property name="kundera.port" value="27017" />
+            <property name="kundera.keyspace" value="kvapps" />
+            <property name="kundera.dialect" value="mongodb" />
+            <property name="kundera.client.lookup.class" value="com.impetus.client.mongodb.MongoDBClientFactory" />
+            <property name="kundera.ddl.auto.prepare" value="create" />
+            <property name="kundera.client.property" value="kundera-mongo.properties" />
         </properties>
     </persistence-unit>
 </persistence>
