@@ -15,7 +15,7 @@ public class KunderaExample {
         user.setCity("London");
 
         EntityManagerFactory emf = Persistence
-                .createEntityManagerFactory("cassandra_cpu"); // cassandra_pu
+                .createEntityManagerFactory("cassandra_pu"); // cassandra_pu
         EntityManager em = emf.createEntityManager();
 
         long time = System.currentTimeMillis();

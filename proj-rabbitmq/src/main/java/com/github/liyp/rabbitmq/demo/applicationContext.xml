@@ -42,10 +42,6 @@
     <rabbit:template id="rabbitTemplate" connection-factory="connectionFactory" 
         message-converter="jackson2JsonMessageConverter" />
 
-    <bean id="myMqGatway" class="com.github.liyp.rabbitmq.demo.MyMqGatway">
-        <property name="amqpTemplate" ref="amqpTemplate" />
-    </bean>
-
     <bean id="queueOneListener" class="com.github.liyp.rabbitmq.demo.QueueOneListener" />
     <bean id="queueTwoListener" class="com.github.liyp.rabbitmq.demo.QueueTwoListener" >
         <property name="rabbitTemplate" ref="rabbitTemplate" />

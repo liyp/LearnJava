@@ -2,9 +2,9 @@ package com.github.liyp.cassandra.jpa.entities;
 
 import java.util.UUID;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -12,19 +12,14 @@ import javax.persistence.Table;
 @Table(name = "uuid_table")
 public class UUIDBean {
 
-    private Long id;
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
+    @Column(name = "uuid")
     private UUID uuid;
+
+    private Long id;
+
     private String name;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public UUIDBean() {
     }
@@ -48,6 +43,14 @@ public class UUIDBean {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long lid) {
+        this.id = lid;
     }
 
 }

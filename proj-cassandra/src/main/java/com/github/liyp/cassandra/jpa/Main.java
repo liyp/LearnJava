@@ -12,7 +12,6 @@ import javax.persistence.Query;
 import com.github.liyp.cassandra.jpa.entities.NonTeachingStaff;
 import com.github.liyp.cassandra.jpa.entities.TeachingStaff;
 import com.github.liyp.cassandra.jpa.entities.UUIDBean;
-import com.impetus.client.cassandra.common.CassandraConstants;
 
 public class Main {
 
@@ -59,14 +58,15 @@ public class Main {
 
     public static void main(String[] args) {
 
-        exec(CASSANDRA, new JpaDoable() {
+        exec(MYSQL, new JpaDoable() {
 
             @Override
             public void doIt(EntityManager em) {
                 UUIDBean bean = new UUIDBean();
+                bean.setUuid(UUID.randomUUID());
                 bean.setId(1L);
                 em.persist(bean);
-                
+
                 System.out.println("uuid: " + bean.getUuid());
 
                 UUIDBean bean2 = em.find(UUIDBean.class, bean.getUuid());

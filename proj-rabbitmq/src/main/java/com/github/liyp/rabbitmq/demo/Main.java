@@ -5,7 +5,6 @@ import java.io.IOException;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 public class Main {
@@ -17,11 +16,9 @@ public class Main {
         ApplicationContext context = new ClassPathXmlApplicationContext(
                 "com/github/liyp/rabbitmq/demo/applicationContext.xml");
 
-        MyMqGatway mq = (MyMqGatway) context.getBean("myMqGatway");
-
         RabbitTemplate rabbitTemplate = (RabbitTemplate) context
                 .getBean("rabbitTemplate");
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 200; i++) {
             rabbitTemplate.convertAndSend("queue_one", "test queue 1 " + i);
             rabbitTemplate.convertAndSend("queue_two", new MsgBean(
                     "test queue 2 " + i));

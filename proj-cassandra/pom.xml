@@ -14,7 +14,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <kundera.version>2.17</kundera.version>
-        <cassandra.driver>2.1.6</cassandra.driver>
+        <cassandra.driver>2.1.5</cassandra.driver>
     </properties>
 
     <dependencies>

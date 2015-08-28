@@ -32,4 +32,13 @@ public interface BeanAccessor {
     public Result<SimpleBean> insertBean(@Param("id") UUID id,
             @Param("date") Date date);
 
+    @Query("UPDATE test.bean SET str = :str WHERE id = :id")
+    ResultSet updateBean(@Param("id") UUID id, @Param("str") String str);
+
+    @Query("SELECT count(*) FROM test.bean")
+    public ResultSet getCntInBean();
+    
+    @Query("alter table bean alter l type int")
+    public ResultSet exec();
+
 }
