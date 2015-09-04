@@ -1,6 +1,4 @@
-.classpath
-.project
-.settings
-target/
-*.log*
-_*
+*
+!src
+!pom.xml
+!.gitignore

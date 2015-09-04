@@ -9,10 +9,13 @@
     <name>proj-java</name>
     <url>http://maven.apache.org</url>
     <modules>
-        <module>proj-mina</module>
-        <module>proj-hibernate</module>
-        <module>proj-rabbitmq</module>
         <module>proj-cassandra</module>
+        <module>proj-demo</module>
+        <module>proj-hibernate</module>
+        <module>proj-mina</module>
+        <module>proj-mq</module>
+        <module>proj-rabbitmq</module>
+        <module>proj-test</module>
     </modules>
 
     <properties>
