@@ -17,7 +17,6 @@
 
 package com.rabbitmq.client.test.functional;
 
-import com.rabbitmq.client.impl.ConnectionParams;
 import com.rabbitmq.client.test.BrokerTestCase;
 
 import java.io.IOException;

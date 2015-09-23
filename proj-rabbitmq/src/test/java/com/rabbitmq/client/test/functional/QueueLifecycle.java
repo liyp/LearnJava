@@ -18,7 +18,6 @@
 package com.rabbitmq.client.test.functional;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;

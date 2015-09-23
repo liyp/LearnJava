@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:rabbit="http://www.springframework.org/schema/rabbit"
     xsi:schemaLocation="
             http://www.springframework.org/schema/beans
                 http://www.springframework.org/schema/beans/spring-beans.xsd
-            http://www.springframework.org/schema/context
-                http://www.springframework.org/schema/context/spring-context.xsd
             http://www.springframework.org/schema/rabbit
                 http://www.springframework.org/schema/rabbit/spring-rabbit-1.4.xsd">
 
@@ -31,7 +29,7 @@
 
     <!-- spring amqp默认的是jackson 的一个插件,目的将生产者生产的数据转换为json存入消息队列，这里替换为fastjson的一个实现 -->
     <bean id="jsonMessageConverter"
-        class="com.github.liyp.rabbitmq.demo.FastJsonMessageConverter"></bean>
+        class="com.github.liyp.rabbitmq.demo.FastJsonMessageConverter" />
 
     <!-- spring template声明 -->
     <rabbit:template exchange="my-mq-exchange" id="amqpTemplate"

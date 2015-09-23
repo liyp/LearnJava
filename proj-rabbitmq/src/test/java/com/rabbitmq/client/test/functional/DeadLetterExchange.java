@@ -354,7 +354,7 @@ public class DeadLetterExchange extends BrokerTestCase {
             new DefaultConsumer(channel) {
                 @Override
                 public void handleDelivery(String consumerTag, Envelope envelope,
-                                           AMQP.BasicProperties properties, byte[] body) throws IOException {
+                                           BasicProperties properties, byte[] body) throws IOException {
                     channel.basicReject(envelope.getDeliveryTag(), false);
                     latch.countDown();
                 }
@@ -375,7 +375,7 @@ public class DeadLetterExchange extends BrokerTestCase {
         headers.put("CC", Arrays.asList("foo"));
         headers.put("BCC", Arrays.asList("bar"));
 
-        publishN(MSG_COUNT, (new AMQP.BasicProperties.Builder())
+        publishN(MSG_COUNT, (new BasicProperties.Builder())
                                .headers(headers)
                                .build());
 
@@ -532,13 +532,13 @@ public class DeadLetterExchange extends BrokerTestCase {
         publishN(n, null);
     }
 
-    private void publishN(int n, AMQP.BasicProperties props)
+    private void publishN(int n, BasicProperties props)
         throws IOException
     {
         for(int x = 0; x < n; x++) { publish(props, "test message"); }
     }
 
-    private void publish(AMQP.BasicProperties props, String body)
+    private void publish(BasicProperties props, String body)
         throws IOException
     {
         channel.basicPublish("amq.direct", "test", props, body.getBytes());

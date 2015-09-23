@@ -66,7 +66,7 @@ public class ConnectionRecovery extends BrokerTestCase {
             assertTrue(c.isOpen());
             ch.queueDeclarePassive(q);
             fail("expected passive declaration to throw");
-        } catch (java.io.IOException e) {
+        } catch (IOException e) {
             // expected
         } finally {
             c.abort();

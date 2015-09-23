@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Host {
@@ -123,7 +122,7 @@ public class Host {
     }
 
     public static void closeConnection(NetworkConnection c) throws IOException {
-        Host.ConnectionInfo ci = findConnectionInfoFor(Host.listConnections(), c);
+        ConnectionInfo ci = findConnectionInfoFor(Host.listConnections(), c);
         closeConnection(ci.getPid());
     }
 
@@ -158,9 +157,9 @@ public class Host {
         return result;
     }
 
-    private static Host.ConnectionInfo findConnectionInfoFor(List<Host.ConnectionInfo> xs, NetworkConnection c) {
-        Host.ConnectionInfo result = null;
-        for (Host.ConnectionInfo ci : xs) {
+    private static ConnectionInfo findConnectionInfoFor(List<ConnectionInfo> xs, NetworkConnection c) {
+        ConnectionInfo result = null;
+        for (ConnectionInfo ci : xs) {
             if(c.getLocalPort() == ci.getPeerPort()){
                 result = ci;
                 break;
