@@ -75,7 +75,7 @@ public class AmazonKinesisRecordProducerSample {
         init();
 
         final String myStreamName = AmazonKinesisApplicationSample.SAMPLE_APPLICATION_STREAM_NAME;
-        final Integer myStreamSize = 2;
+        final Integer myStreamSize = 1;
 
         // Describe the stream and check if it exists.
         DescribeStreamRequest describeStreamRequest = new DescribeStreamRequest().withStreamName(myStreamName);

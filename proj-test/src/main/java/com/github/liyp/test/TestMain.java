@@ -7,13 +7,15 @@ import java.util.List;
 import org.apache.commons.collections.IteratorUtils;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class TestMain {
-    
+
     public static String[] splitAndTrim(String commaStr, String regex) {
         List<String> list = new ArrayList<>();
-        for(String item : commaStr.split(",")) {
+        for (String item : commaStr.split(",")) {
             list.add(item.trim());
         }
         return list.toArray(new String[0]);
@@ -21,6 +23,20 @@ public class TestMain {
 
     @SuppressWarnings("unchecked")
     public static void main(String[] args) {
+        // add a shutdown hook to stop the server
+        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("########### shoutdown begin....");
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("########### shoutdown end....");
+            }
+        }));
+
         System.out.println(args.length);
         Iterator<String> iterator1 = IteratorUtils.arrayIterator(new String[] {
                 "one", "two", "three", "11", "22", "AB" });
@@ -48,22 +64,39 @@ public class TestMain {
         System.out.println("===================");
 
         System.out.println("asas".matches("[a-z]{4}"));
-        
+
         System.out.println("Y".equals(null));
-        
+
         System.out.println(String.format("%02d", 1000L));
-        
-        System.out.println(ArrayUtils.toString(splitAndTrim(" 11, 21,12 ,", ",")));
-        
+
+        System.out.println(ArrayUtils
+                .toString(splitAndTrim(" 11, 21,12 ,", ",")));
+
         System.out.println(new ArrayList<String>().toString());
-        
+
         JSONObject json = new JSONObject("{\"keynull\":null}");
+        json.put("bool", false);
         json.put("keya", "as");
         json.put("key2", 2212222222222222222L);
         System.out.println(json);
         System.out.println(json.get("keynull").equals(null));
+
+        String a = String
+                .format("{\"id\":%d,\"method\":\"testCrossSync\",\"circle\":%d},\"isEnd\":true",
+                        1, 1);
+        System.out.println(a.getBytes().length);
+
+        System.out.println(new String[] { "a", "b" });
+
+        System.out.println(new JSONArray("[\"aa\",\"\"]"));
+
+        String data = String.format("%9d %s", 1,
+                RandomStringUtils.randomAlphanumeric(10));
+        System.out.println(data.getBytes().length);
         
+        System.out.println(ArrayUtils.toString("1|2| 3|  333||| 3".split("\\|")));
         
-        
+        while (true)
+            ;
     }
 }

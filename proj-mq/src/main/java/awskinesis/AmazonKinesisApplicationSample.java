@@ -17,6 +17,10 @@ package awskinesis;
 import java.net.InetAddress;
 import java.util.UUID;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.junit.experimental.theories.Theories;
+
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSCredentialsProvider;
@@ -34,6 +38,8 @@ import com.amazonaws.services.kinesis.model.ResourceNotFoundException;
  * Sample Amazon Kinesis Application.
  */
 public final class AmazonKinesisApplicationSample {
+    
+    private static final Log LOG = LogFactory.getLog(AmazonKinesisApplicationSample.class);
 
     /*
      * Before running the code:
@@ -50,7 +56,7 @@ public final class AmazonKinesisApplicationSample {
 
     public static final String SAMPLE_APPLICATION_STREAM_NAME = "myFirstStream";
 
-    private static final String SAMPLE_APPLICATION_NAME = "SampleKinesisApplication2";
+    private static final String SAMPLE_APPLICATION_NAME = "SampleKinesisApplication";
 
     // Initial position in the stream when the application starts up for the first time.
     // Position can be one of LATEST (most recent data) or TRIM_HORIZON (oldest available data)
@@ -95,7 +101,7 @@ public final class AmazonKinesisApplicationSample {
         kinesisClientLibConfiguration.withInitialPositionInStream(SAMPLE_APPLICATION_INITIAL_POSITION_IN_STREAM);
 
         IRecordProcessorFactory recordProcessorFactory = new AmazonKinesisApplicationRecordProcessorFactory();
-        Worker worker = new Worker(recordProcessorFactory, kinesisClientLibConfiguration);
+        final Worker worker = new Worker(recordProcessorFactory, kinesisClientLibConfiguration);
 
         System.out.printf("Running %s to process stream %s as worker %s...\n",
                 SAMPLE_APPLICATION_NAME,
@@ -110,6 +116,23 @@ public final class AmazonKinesisApplicationSample {
             t.printStackTrace();
             exitCode = 1;
         }
+        
+        // add a shutdown hook to stop the server
+        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+            @Override
+            public void run() {
+                LOG.info("########### shoutdown begin....");
+                worker.shutdown();
+                
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                LOG.info("########### shoutdown end....");
+            }
+        }));
+        
         System.exit(exitCode);
     }
 
