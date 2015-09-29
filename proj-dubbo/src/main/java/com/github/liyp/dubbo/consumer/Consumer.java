@@ -17,8 +17,8 @@ public class Consumer {
         while (true) {
             String res = service.sayHello(i);
             System.out.println(res);
+            Thread.sleep(1000);
             System.out.println(notify.ret.containsKey(i));
-            Thread.sleep(10000);
             i++;
         }
     }
