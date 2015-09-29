@@ -2,6 +2,7 @@ package com.github.liyp.dubbo.consumer;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import com.github.liyp.dubbo.api.HelloBean;
 import com.github.liyp.dubbo.api.HelloService;
 
 public class Consumer {
@@ -15,7 +16,8 @@ public class Consumer {
         System.out.println("dubbo consumer running...");
         int i = 0;
         while (true) {
-            String res = service.sayHello(i);
+            String res = service.sayHello(new HelloBean(i, "lee"));
+            // service.sayHello(i);
             System.out.println(res);
             Thread.sleep(1000);
             System.out.println(notify.ret.containsKey(i));

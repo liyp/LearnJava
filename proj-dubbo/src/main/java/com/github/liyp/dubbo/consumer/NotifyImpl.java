@@ -6,6 +6,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.github.liyp.dubbo.api.HelloBean;
+
 public class NotifyImpl implements Notify {
 
     private static final Logger logger = LoggerFactory
@@ -15,15 +17,15 @@ public class NotifyImpl implements Notify {
     public Map<Integer, Throwable> errors = new HashMap<>();
 
     @Override
-    public void onreturn(String rst, Integer id) {
+    public void onreturn(String rst, HelloBean id) {
         logger.info("onreturn: rst={}, in={}", rst, id);
-        ret.put(id, rst);
+        ret.put(id.getId(), rst);
     }
 
     @Override
-    public void onthrow(Throwable ex, Integer id) {
+    public void onthrow(Throwable ex, HelloBean id) {
         logger.info("onthrow: ex={}, id={}", ex, id);
-        errors.put(id, ex);
+        errors.put(id.getId(), ex);
     }
 
 }
