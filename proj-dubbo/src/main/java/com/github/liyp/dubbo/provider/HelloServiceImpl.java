@@ -14,13 +14,18 @@ public class HelloServiceImpl implements HelloService {
     @Override
     public String sayHello(HelloBean who) {
         logger.info("Service: Say Hello {}", who);
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return "Hello " + who;
     }
 
     @Override
     public String sayHello(int i) {
         logger.info("Service: Say Hello {}", i);
-        return "hello "+ i;
+        return "hello " + i;
     }
 
 }
