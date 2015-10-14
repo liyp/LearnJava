@@ -11,7 +11,9 @@ import com.github.liyp.dubbo.api.HelloService;
 public class Consumer {
 
     static AtomicInteger ai = new AtomicInteger();
-    static CountDownLatch cdl = new CountDownLatch(200);
+    static CountDownLatch cdl;
+    static int limit = 5;
+    static boolean locked = false;
 
     public static void main(String[] args) throws Exception {
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
@@ -25,9 +27,11 @@ public class Consumer {
             String res = service.sayHello(new HelloBean(i, "lee"));
             // service.sayHello(i);
             System.out.println(ai.incrementAndGet());
-            if (ai.get() == 200) {
+            if (ai.get() >= limit) {
+                locked = true;
+                cdl = new CountDownLatch(limit);
                 cdl.await();
-                cdl = new CountDownLatch(200);
+                locked = false;
             }
             // Thread.sleep(1000);
             i++;

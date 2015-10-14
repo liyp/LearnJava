@@ -6,8 +6,8 @@
 
     <dubbo:application name="say-hello-app" />
     <dubbo:registry address="multicast://224.5.6.7:1234" />
-    <dubbo:reference id="service" interface="com.github.liyp.dubbo.api.HelloService">
-        <dubbo:method name="sayHello" async="true" onreturn="callback.onreturn" onthrow="callback.onthrow" timeout="15000"/>
+    <dubbo:reference id="service" interface="com.github.liyp.dubbo.api.HelloService" >
+        <dubbo:method name="sayHello" async="true" onreturn="callback.onreturn" onthrow="callback.onthrow" timeout="15000" loadbalance="leastactive "/>
     </dubbo:reference>
 
     <bean id="callback" class="com.github.liyp.dubbo.consumer.NotifyImpl" />
