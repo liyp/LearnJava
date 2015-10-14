@@ -9,12 +9,15 @@
     <name>proj-java</name>
     <url>http://maven.apache.org</url>
     <modules>
+        <module>proj-akka</module>
+        <module>proj-aws-kinesis</module>
         <module>proj-cassandra</module>
         <module>proj-demo</module>
+        <module>proj-dubbo</module>
         <module>proj-hibernate</module>
         <module>proj-mina</module>
-        <module>proj-mq</module>
         <module>proj-rabbitmq</module>
+        <module>proj-spring-boot</module>
         <module>proj-test</module>
     </modules>
 

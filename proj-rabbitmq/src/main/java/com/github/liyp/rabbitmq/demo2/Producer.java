@@ -14,7 +14,7 @@ public class Producer {
         factory.setUsername("liyp");
         factory.setPassword("liyp");
         factory.setVirtualHost("/");
-        factory.setHost("192.168.137.199");
+        factory.setHost("127.0.0.1");
         factory.setPort(5672);
         Connection conn = factory.newConnection();
         Channel channel = conn.createChannel();

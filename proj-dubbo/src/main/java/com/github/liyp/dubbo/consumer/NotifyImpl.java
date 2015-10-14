@@ -20,6 +20,8 @@ public class NotifyImpl implements Notify {
     public void onreturn(String rst, HelloBean id) {
         logger.info("onreturn: rst={}, in={}", rst, id);
         ret.put(id.getId(), rst);
+        Consumer.cdl.countDown();
+        Consumer.ai.decrementAndGet();
     }
 
     @Override

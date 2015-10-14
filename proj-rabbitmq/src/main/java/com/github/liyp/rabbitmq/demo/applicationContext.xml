@@ -10,7 +10,7 @@
 
     <!-- 连接服务配置 -->
     <rabbit:connection-factory id="connectionFactory"
-        addresses="192.168.137.199:5672" username="liyp" password="liyp" />
+        addresses="127.0.0.1:5672" username="liyp" password="liyp" />
     <rabbit:admin connection-factory="connectionFactory" />
 
     <!-- queue 队列声明 -->

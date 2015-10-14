@@ -6,7 +6,7 @@
         <artifactId>proj-java</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <artifactId>proj-mq</artifactId>
+    <artifactId>proj-aws-kinesis</artifactId>
     <packaging>jar</packaging>
     <name>${project.artifactId}</name>
     <url>http://maven.apache.org</url>
