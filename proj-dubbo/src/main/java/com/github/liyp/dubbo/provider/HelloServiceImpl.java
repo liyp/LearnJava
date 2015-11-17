@@ -15,7 +15,7 @@ public class HelloServiceImpl implements HelloService {
     public String sayHello(HelloBean who) {
         logger.info("Service: Say Hello {}", who);
         try {
-            Thread.sleep(10000);
+            Thread.sleep(100);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
