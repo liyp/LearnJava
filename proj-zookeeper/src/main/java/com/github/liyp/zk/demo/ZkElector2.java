@@ -1,5 +1,10 @@
 package com.github.liyp.zk.demo;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
@@ -12,12 +17,14 @@ import org.apache.curator.retry.ExponentialBackoffRetry;
  * using curator
  */
 public class ZkElector2 {
-    public static void main(String[] args) {
+
+    final static String path = "/test/leader";
+
+    public static void main(String[] args) throws IOException {
 
         RetryPolicy retryPolicy = new ExponentialBackoffRetry(1000, 3);
         CuratorFramework client = CuratorFrameworkFactory.newClient("localhost",
                 retryPolicy);
-        client.start();
 
         LeaderSelectorListener listener = new LeaderSelectorListenerAdapter() {
             public void takeLeadership(CuratorFramework client)
@@ -25,12 +32,22 @@ public class ZkElector2 {
                 // this callback will get called when you are the leader
                 // do whatever leader work you need to and only exit
                 // this method when you want to relinquish leadership
+                System.out.println("i am leader...");
+                Thread.sleep(10000);
+                System.out.println("leader exit.");
             }
         };
 
-        LeaderSelector selector = new LeaderSelector(client, "/", listener);
+        LeaderSelector selector = new LeaderSelector(client, path, listener);
         selector.autoRequeue(); // not required, but this is behavior that you
                                 // will probably expect
+
+        client.start();
         selector.start();
+
+        System.out.println("Press enter/return to quit\n");
+        new BufferedReader(new InputStreamReader(System.in)).readLine();
+        selector.close();
+        client.close();
     }
 }

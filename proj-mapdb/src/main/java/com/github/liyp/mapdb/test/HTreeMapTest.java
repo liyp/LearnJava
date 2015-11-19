@@ -19,8 +19,7 @@ public class HTreeMapTest {
 
         HTreeMap<Integer, Request> map = db.createHashMap("cache")
                 .expireMaxSize(10000).expireStoreSize(0.01)
-                .expireAfterWrite(30, TimeUnit.SECONDS)
-                .expireAfterAccess(10, TimeUnit.SECONDS).makeOrGet();
+                .expireAfterWrite(1, TimeUnit.SECONDS).makeOrGet();
         Store store = Store.forDB(db);
         System.out.println(map.size());
 
@@ -62,7 +61,7 @@ public class HTreeMapTest {
             this.name = name;
             this.time = time;
             StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < 100000; i++) {
+            for (int i = 0; i < 10; i++) {
                 sb.append('a');
             }
             this.str = sb.toString();
