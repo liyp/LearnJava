@@ -1,5 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.github.liyp</groupId>
@@ -9,17 +9,22 @@
     <name>proj-java</name>
     <url>http://maven.apache.org</url>
     <modules>
-        <module>proj-akka</module>
-        <module>proj-aws-kinesis</module>
-        <module>proj-cassandra</module>
-        <module>proj-demo</module>
-        <module>proj-dubbo</module>
-        <module>proj-hibernate</module>
-        <module>proj-mina</module>
-        <module>proj-rabbitmq</module>
-        <module>proj-spring-boot</module>
-        <module>proj-test</module>
-    </modules>
+        <module>archetype</module>
+
+        <module>akka</module>
+        <module>aws-kinesis</module>
+        <module>cassandra</module>
+        <module>dubbo</module>
+        <module>guava</module>
+        <module>hibernate</module>
+        <module>mapdb</module>
+        <module>mina</module>
+        <module>rabbitmq</module>
+        <module>spring</module>
+        <module>test</module>
+        <module>zookeeper</module>
+    <module>netty</module>
+  </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
