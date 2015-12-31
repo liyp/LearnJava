@@ -1,15 +1,13 @@
 package com.github.liyp.cassandra.originaldriver;
 
-import java.util.Date;
-import java.util.UUID;
-
 import com.datastax.driver.core.Cluster;
-import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.mapping.Mapper;
 import com.datastax.driver.mapping.MappingManager;
 import com.datastax.driver.mapping.Result;
-import com.google.common.util.concurrent.ListenableFuture;
+
+import java.util.Date;
+import java.util.UUID;
 
 public class DaoImpl {
 
@@ -40,11 +38,11 @@ public class DaoImpl {
 
     public void testAccessor() {
         BeanAccessor acc = mappingManager.createAccessor(BeanAccessor.class);
-        // Result<SimpleBean> r = acc.insertBean(UUID.randomUUID(), new Date());
+        Result<SimpleBean> r = acc.insertBean(UUID.randomUUID(), new Date());
         // ResultSet r =
         // acc.updateBean(UUID.fromString("7248de6e-3c30-4ccf-a62b-9c78ec3a6644"),
         // "test update");
-        ResultSet r = acc.exec();
+//        ResultSet r = acc.exec();
         System.out.println(r.one());
     }
 

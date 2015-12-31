@@ -10,6 +10,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class TestMain {
 
@@ -103,5 +105,13 @@ public class TestMain {
         j2.put("b", "22222");
         System.out.println(j1 + " | " + j2);
 
+        System.out.println("======================");
+
+        String regex = "\\d+(\\-\\d+){2} \\d+(:\\d+){2}";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher("2015-12-28 15:46:14  付_NC250_MD旧固件:motion de\n");
+        String eventDate = matcher.find() ? matcher.group() : "";
+
+        System.out.println(eventDate);
     }
 }

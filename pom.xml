@@ -17,14 +17,15 @@
         <module>dubbo</module>
         <module>guava</module>
         <module>hibernate</module>
+        <module>kafka</module>
         <module>mapdb</module>
         <module>mina</module>
         <module>rabbitmq</module>
         <module>spring</module>
         <module>test</module>
         <module>zookeeper</module>
-    <module>netty</module>
-  </modules>
+        <module>netty</module>
+    </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
