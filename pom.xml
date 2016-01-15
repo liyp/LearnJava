@@ -6,7 +6,7 @@
     <artifactId>proj-java</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>proj-java</name>
+    <name>${project.artifactId}</name>
     <url>http://maven.apache.org</url>
     <modules>
         <module>archetype</module>
@@ -25,7 +25,8 @@
         <module>test</module>
         <module>zookeeper</module>
         <module>netty</module>
-    </modules>
+        <module>owner</module>
+  </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

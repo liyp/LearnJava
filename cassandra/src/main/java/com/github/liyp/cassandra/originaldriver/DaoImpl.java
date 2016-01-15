@@ -1,12 +1,15 @@
 package com.github.liyp.cassandra.originaldriver;
 
 import com.datastax.driver.core.Cluster;
+import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.mapping.Mapper;
 import com.datastax.driver.mapping.MappingManager;
 import com.datastax.driver.mapping.Result;
 
 import java.util.Date;
+import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 public class DaoImpl {
@@ -38,12 +41,8 @@ public class DaoImpl {
 
     public void testAccessor() {
         BeanAccessor acc = mappingManager.createAccessor(BeanAccessor.class);
-        Result<SimpleBean> r = acc.insertBean(UUID.randomUUID(), new Date());
-        // ResultSet r =
-        // acc.updateBean(UUID.fromString("7248de6e-3c30-4ccf-a62b-9c78ec3a6644"),
-        // "test update");
-//        ResultSet r = acc.exec();
-        System.out.println(r.one());
+        ResultSet r = acc.insertBean(UUID.randomUUID(), new Date());
+        System.out.println(r.getExecutionInfo().getQueryTrace());
     }
 
     public void testMapper4Accessor() {
@@ -93,7 +92,7 @@ public class DaoImpl {
             bean.setStr(String.valueOf(i));
             mapper.save(bean);
             try {
-                Thread.sleep(10);
+                Thread.sleep(100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -109,13 +108,21 @@ public class DaoImpl {
         }
     }
 
+    public void testMapAccessor() {
+        MapAccessor mapAcc = mappingManager.createAccessor(MapAccessor.class);
+        ResultSet rs = mapAcc.getMapColumn("id002");
+        System.out.println(rs.iterator().hasNext());
+        System.out.println(rs.one().getMap("c_map",String.class, Object.class));
+    }
+
     public static void main(String[] args) {
-        if (args.length != 3) {
-            System.out.println("main 192.168.137.199 test 10000");
-        }
-        DaoImpl dao = new DaoImpl("192.168.137.199", "test");
+        DaoImpl dao = new DaoImpl("192.168.137.188", "test");
         try {
-            dao.testCassandraUpdateDelay(10000);
+            try {
+                Thread.sleep(10);
+            } catch (Exception e) {
+            }
+            dao.testMapAccessor();
         } finally {
             dao.session.close();
             dao.cluster.close();

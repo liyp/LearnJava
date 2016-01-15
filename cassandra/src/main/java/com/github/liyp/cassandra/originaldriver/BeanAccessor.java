@@ -8,6 +8,7 @@ import com.datastax.driver.mapping.Result;
 import com.datastax.driver.mapping.annotations.Accessor;
 import com.datastax.driver.mapping.annotations.Param;
 import com.datastax.driver.mapping.annotations.Query;
+import com.datastax.driver.mapping.annotations.QueryParameters;
 import com.google.common.util.concurrent.ListenableFuture;
 
 @Accessor
@@ -29,7 +30,8 @@ public interface BeanAccessor {
     public ResultSet getStrRow(UUID id);
 
     @Query("INSERT INTO test.bean (id, date) values(:id, :date)")
-    public Result<SimpleBean> insertBean(@Param("id") UUID id,
+    @QueryParameters(tracing = true)
+    public ResultSet insertBean(@Param("id") UUID id,
             @Param("date") Date date);
 
     @Query("UPDATE test.bean SET str = :str WHERE id = :id")
@@ -37,7 +39,7 @@ public interface BeanAccessor {
 
     @Query("SELECT count(*) FROM test.bean")
     public ResultSet getCntInBean();
-    
+
     @Query("alter table bean alter l type int")
     public ResultSet exec();
 
