@@ -31,4 +31,27 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <useUniqueVersions>true</useUniqueVersions>
+                            <mainClass>com.github.liyp.owner.App</mainClass>
+                        </manifest>
+                    </archive>
+                    <!-- 只打包com文件夹下面的文件，排除resources文件 -->
+                    <includes>
+                        <include>com/**</include>
+                    </includes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
