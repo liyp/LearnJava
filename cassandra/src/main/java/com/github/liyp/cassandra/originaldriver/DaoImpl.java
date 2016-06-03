@@ -1,3 +1,18 @@
+/*
+ * Copyright © 2016 liyp (liyp.yunpeng@gmail.com)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.github.liyp.cassandra.originaldriver;
 
 import com.datastax.driver.core.Cluster;
@@ -8,8 +23,6 @@ import com.datastax.driver.mapping.MappingManager;
 import com.datastax.driver.mapping.Result;
 
 import java.util.Date;
-import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
 
 public class DaoImpl {
@@ -41,8 +54,11 @@ public class DaoImpl {
 
     public void testAccessor() {
         BeanAccessor acc = mappingManager.createAccessor(BeanAccessor.class);
-        ResultSet r = acc.insertBean(UUID.randomUUID(), new Date());
+        UUID uuid = UUID.randomUUID();
+        ResultSet r = acc.insertBean(uuid, new Date());
         System.out.println(r.getExecutionInfo().getQueryTrace());
+        SimpleBean sb = acc.getStr(uuid);
+        System.out.println(sb);
     }
 
     public void testMapper4Accessor() {
@@ -112,19 +128,32 @@ public class DaoImpl {
         MapAccessor mapAcc = mappingManager.createAccessor(MapAccessor.class);
         ResultSet rs = mapAcc.getMapColumn("id002");
         System.out.println(rs.iterator().hasNext());
-        System.out.println(rs.one().getMap("c_map",String.class, Object.class));
+        System.out.println(rs.one().getMap("c_map", String.class, Object.class));
     }
 
-    public static void main(String[] args) {
-        DaoImpl dao = new DaoImpl("192.168.137.188", "test");
-        try {
+    public void testChangeChema() {
+        BeanAccessor acc = mappingManager.createAccessor(BeanAccessor.class);
+
+        UUID uuid = UUID.randomUUID();
+        ResultSet r = acc.insertBean(uuid, new Date());
+        System.out.println(r.getExecutionInfo().getQueryTrace());
+        while (true) {
             try {
-                Thread.sleep(10);
+                Thread.sleep(2000);
+                SimpleBean sb = acc.getStr(uuid);
+                System.out.println(sb);
             } catch (Exception e) {
+                e.printStackTrace();
+                System.out.println("=====: "+cluster.getMetadata().exportSchemaAsString());
             }
-            dao.testMapAccessor();
+        }
+    }
+
+    public static void main(String[] args) throws Exception {
+        DaoImpl dao = new DaoImpl("127.0.0.1", "test");
+        try {
+            dao.testChangeChema();
         } finally {
-            dao.session.close();
             dao.cluster.close();
         }
     }

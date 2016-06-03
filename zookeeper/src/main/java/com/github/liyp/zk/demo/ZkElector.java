@@ -1,25 +1,36 @@
+/*
+ * Copyright © 2016 liyp (liyp.yunpeng@gmail.com)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.github.liyp.zk.demo;
 
-import java.io.IOException;
-import java.util.List;
-
-import org.apache.zookeeper.CreateMode;
-import org.apache.zookeeper.KeeperException;
-import org.apache.zookeeper.WatchedEvent;
-import org.apache.zookeeper.Watcher;
-import org.apache.zookeeper.ZooKeeper;
+import org.apache.zookeeper.*;
 import org.apache.zookeeper.ZooDefs.Ids;
 import org.apache.zookeeper.data.Stat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.util.List;
+
 /**
  * ZKManager elects the leader to process OA publishing tasks handler.
- * 
+ * <p/>
  * <p>
  * Election Algorithms description:
  * </p>
- * 
+ * <p/>
  * Let ELECTION be a path of choice of the application. To volunteer to be a
  * leader: 1. Create znode z with path "ELECTION/n_" with both SEQUENCE and
  * EPHEMERAL flags; 2. Let C be the children of "ELECTION", and i be the
@@ -34,54 +45,73 @@ public class ZkElector implements Watcher {
     private static final Logger logger = LoggerFactory
             .getLogger(ZkElector.class);
 
-    /** the root path of push server nodes */
-    private static final String ROOT_PATH = "/ROOT";
+    /**
+     * the root path of push server nodes
+     */
+    private static final String ROOT_PATH = "/PUSH";
 
-    /** the parent path of push server nodes */
+    /**
+     * the parent path of push server nodes
+     */
     private static final String ELECTION_PATH = ROOT_PATH + "/ELECTION";
 
-    /** the path of the current push server node */
+    /**
+     * the path of the current push server node
+     */
     private String currentPath = null;
 
     private ZooKeeper zookeeper;
 
+    private String zkAddress;
+    private int zkTimeout;
+
     public ZkElector(String zkAddress, int zkTimeout) throws IOException {
         this.zookeeper = new ZooKeeper(zkAddress, zkTimeout, this);
+        this.zkAddress = zkAddress;
+        this.zkTimeout = zkTimeout;
     }
 
     @Override
     public void process(WatchedEvent event) {
+        logger.info("ZK path ,state , type: {}", event.getPath() + " " + event.getState() + " " + event.getType() + "    #"+zookeeper.hashCode());
         switch (event.getType()) {
-        case NodeChildrenChanged:
-        case NodeCreated:
-        case NodeDataChanged:
-            break;
-        case NodeDeleted:
-            try {
-                newLeaderElection();
-            } catch (KeeperException | InterruptedException e) {
-                logger.error("New leader election failed.", e);
-            }
-            break;
-        case None:
-            switch (event.getState()) {
-            case Disconnected:
-                logger.info("ZK path {} Disconnected.", event.getPath());
+            case NodeChildrenChanged:
+            case NodeCreated:
+            case NodeDataChanged:
                 break;
-            case Expired:
-                logger.info("ZK path {} Expired.", event.getPath());
+            case NodeDeleted:
                 try {
-                    leaderElection();
+                    newLeaderElection();
                 } catch (KeeperException | InterruptedException e) {
-                    logger.error("ZK path rebuild error.");
+                    logger.error("New leader election failed.", e);
                 }
                 break;
-            default:
-                logger.info("ZK path {}, state {}", event.getPath(),
-                        event.getState());
+            case None:
+                switch (event.getState()) {
+                    case Disconnected:
+                        logger.info("ZK path {} Disconnected.", event.getPath());
+                        break;
+                    case Expired:
+                        logger.info("ZK path {} Expired.", event.getPath());
+                        try {
+                            // shutdown
+                            this.zookeeper = new ZooKeeper(zkAddress, zkTimeout, this);
+                            leaderElection();
+                        } catch (KeeperException | InterruptedException e) {
+                            logger.error("ZK path rebuild error.", e);
+                        } catch (Exception e) {
+                            logger.info("{}",this.hashCode(),e);
+                        }
+                        break;
+                    case SyncConnected:
+                        logger.info("ZK path {} SyncConnected.", event.getPath());
+
+                        break;
+                    default:
+                        logger.info("ZK path {}, state {}", event.getPath(), event.getState());
+                        break;
+                }
                 break;
-            }
-            break;
         }
     }
 
@@ -150,7 +180,7 @@ public class ZkElector implements Watcher {
 
     public static void main(String[] args)
             throws IOException, KeeperException, InterruptedException {
-        ZkElector zkElector = new ZkElector("127.0.0.1", 100);
+        ZkElector zkElector = new ZkElector("127.0.0.1", 20000);
         zkElector.leaderElection();
         System.in.read();
     }
