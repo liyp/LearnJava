@@ -32,7 +32,6 @@ public class ReadOpt implements Runnable {
                 .createAccessor(RAWBeanAccessor.class);
     }
 
-    @Override
     public void run() {
         System.out.println("r." + WriteOpt.readyToWrite.get());
         if (WriteOpt.readyToWrite.get()) {

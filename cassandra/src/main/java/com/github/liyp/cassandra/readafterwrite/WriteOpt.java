@@ -49,7 +49,6 @@ public class WriteOpt implements Runnable {
         dao.getMappingManager().mapper(RAWBean.class).save(bean);
     }
 
-    @Override
     public void run() {
         System.out.println("w." + readyToWrite.get());
         if (readyToWrite.get()) {

@@ -39,7 +39,6 @@ public class Main {
 
     static JpaDoable d0 = new JpaDoable() {
 
-        @Override
         public void doIt(EntityManager em) {
             // Teaching staff entity
             TeachingStaff ts1 = new TeachingStaff(1, "Gopal", "MSc MEd",
@@ -75,7 +74,6 @@ public class Main {
 
         exec(MYSQL, new JpaDoable() {
 
-            @Override
             public void doIt(EntityManager em) {
                 UUIDBean bean = new UUIDBean();
                 bean.setUuid(UUID.randomUUID());

@@ -18,7 +18,9 @@ package com.github.liyp.cassandra.originaldriver;
 import java.util.Date;
 import java.util.UUID;
 
+import com.datastax.driver.core.ConsistencyLevel;
 import com.datastax.driver.core.ResultSet;
+import com.datastax.driver.core.Statement;
 import com.datastax.driver.mapping.Result;
 import com.datastax.driver.mapping.annotations.Accessor;
 import com.datastax.driver.mapping.annotations.Param;
@@ -46,7 +48,7 @@ public interface BeanAccessor {
 
     @Query("INSERT INTO test.bean (id, date) values(:id, :date)")
     @QueryParameters(tracing = true)
-    public ResultSet insertBean(@Param("id") UUID id,
+    Statement insertBean(@Param("id") UUID id,
             @Param("date") Date date);
 
     @Query("UPDATE test.bean SET str = :str WHERE id = :id")

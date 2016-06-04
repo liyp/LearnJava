@@ -18,6 +18,7 @@ package com.github.liyp.cassandra.originaldriver;
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Session;
+import com.datastax.driver.core.Statement;
 import com.datastax.driver.mapping.Mapper;
 import com.datastax.driver.mapping.MappingManager;
 import com.datastax.driver.mapping.Result;
@@ -54,11 +55,12 @@ public class DaoImpl {
 
     public void testAccessor() {
         BeanAccessor acc = mappingManager.createAccessor(BeanAccessor.class);
-        UUID uuid = UUID.randomUUID();
-        ResultSet r = acc.insertBean(uuid, new Date());
-        System.out.println(r.getExecutionInfo().getQueryTrace());
-        SimpleBean sb = acc.getStr(uuid);
-        System.out.println(sb);
+        Date date = new Date();
+        Statement r = acc.insertBean(UUID.fromString("68dd03b8-3687-4e33-9b6d-7ce424629485"), date);
+        r.enableTracing();
+        ResultSet rs = mappingManager.getSession().execute(r);
+        System.out.println("rs:" + rs.getExecutionInfo().getQueryTrace());
+        System.out.println("date:" + date);
     }
 
     public void testMapper4Accessor() {
@@ -124,35 +126,10 @@ public class DaoImpl {
         }
     }
 
-    public void testMapAccessor() {
-        MapAccessor mapAcc = mappingManager.createAccessor(MapAccessor.class);
-        ResultSet rs = mapAcc.getMapColumn("id002");
-        System.out.println(rs.iterator().hasNext());
-        System.out.println(rs.one().getMap("c_map", String.class, Object.class));
-    }
-
-    public void testChangeChema() {
-        BeanAccessor acc = mappingManager.createAccessor(BeanAccessor.class);
-
-        UUID uuid = UUID.randomUUID();
-        ResultSet r = acc.insertBean(uuid, new Date());
-        System.out.println(r.getExecutionInfo().getQueryTrace());
-        while (true) {
-            try {
-                Thread.sleep(2000);
-                SimpleBean sb = acc.getStr(uuid);
-                System.out.println(sb);
-            } catch (Exception e) {
-                e.printStackTrace();
-                System.out.println("=====: "+cluster.getMetadata().exportSchemaAsString());
-            }
-        }
-    }
-
-    public static void main(String[] args) throws Exception {
-        DaoImpl dao = new DaoImpl("127.0.0.1", "test");
+    public static void main(String[] args) {
+        DaoImpl dao = new DaoImpl("172.17.0.4", "test");
         try {
-            dao.testChangeChema();
+            dao.testAccessor();
         } finally {
             dao.cluster.close();
         }

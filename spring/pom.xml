@@ -23,7 +23,7 @@
         <artifactId>proj-java</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <artifactId>spring-boot</artifactId>
+    <artifactId>spring</artifactId>
     <packaging>jar</packaging>
     <name>${project.artifactId}</name>
     <url>http://maven.apache.org</url>
