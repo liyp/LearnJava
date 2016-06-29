@@ -20,11 +20,14 @@ import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by liyunpeng on 12/8/15.
  */
 public class HandlerChainApp {
+    private static final Logger logger = LoggerFactory.getLogger(HandlerChainApp.class);
 
     static final int PORT = 51234;
 
@@ -35,31 +38,34 @@ public class HandlerChainApp {
 
         try {
             ServerBootstrap b = new ServerBootstrap();
-            b.group(boss, boss).channel(NioServerSocketChannel.class).localAddress(PORT)
+            b.group(boss, worker).channel(NioServerSocketChannel.class)
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel ch) throws Exception {
                             ch.pipeline().addLast(new ChannelInboundHandlerAdapter() {
                                 @Override
                                 public void channelActive(ChannelHandlerContext ctx) throws Exception {
-                                    super.channelActive(ctx);
-                                    System.out.println("1");
+                                    logger.info("1");
                                     ctx.fireChannelActive();
                                 }
                             }).addLast(new ChannelInboundHandlerAdapter() {
                                 @Override
                                 public void channelActive(ChannelHandlerContext ctx) throws Exception {
-                                    System.out.println(2);
+                                    logger.info("2");
+                                    ctx.fireChannelActive();
                                 }
                             }).addLast(new ChannelInboundHandlerAdapter() {
                                 @Override
                                 public void channelActive(ChannelHandlerContext ctx) throws Exception {
-                                    System.out.println(3);
+                                    logger.info("3");
+                                    ctx.fireChannelActive();
                                 }
                             });
                         }
-                    });
-            ChannelFuture f = b.bind().sync();
+                    }).option(ChannelOption.SO_BACKLOG, 128)
+                    .childOption(ChannelOption.SO_KEEPALIVE, true);
+            ChannelFuture f = b.bind(PORT).sync();
+            logger.info("9999");
             f.channel().closeFuture().sync();
         } finally {
             worker.shutdownGracefully();
