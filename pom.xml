@@ -69,7 +69,8 @@
         <module>zookeeper</module>
         <module>netty</module>
         <module>owner</module>
-  </modules>
+        <module>jackson</module>
+    </modules>
 
     <dependencies>
         <dependency>
