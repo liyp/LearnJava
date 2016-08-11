@@ -1,0 +1,34 @@
+rootProject.name = 'proj-java'
+include ':akka'
+include ':aws-kinesis'
+include ':cassandra'
+include ':dubbo'
+include ':guava'
+include ':hibernate'
+include ':kafka'
+include ':mapdb'
+include ':mina'
+include ':rabbitmq'
+include ':spring'
+include ':test'
+include ':zookeeper'
+include ':netty'
+include ':owner'
+include ':jackson'
+
+project(':akka').projectDir = "$rootDir/akka" as File
+project(':aws-kinesis').projectDir = "$rootDir/aws-kinesis" as File
+project(':cassandra').projectDir = "$rootDir/cassandra" as File
+project(':dubbo').projectDir = "$rootDir/dubbo" as File
+project(':guava').projectDir = "$rootDir/guava" as File
+project(':hibernate').projectDir = "$rootDir/hibernate" as File
+project(':kafka').projectDir = "$rootDir/kafka" as File
+project(':mapdb').projectDir = "$rootDir/mapdb" as File
+project(':mina').projectDir = "$rootDir/mina" as File
+project(':rabbitmq').projectDir = "$rootDir/rabbitmq" as File
+project(':spring').projectDir = "$rootDir/spring" as File
+project(':test').projectDir = "$rootDir/test" as File
+project(':zookeeper').projectDir = "$rootDir/zookeeper" as File
+project(':netty').projectDir = "$rootDir/netty" as File
+project(':owner').projectDir = "$rootDir/owner" as File
+project(':jackson').projectDir = "$rootDir/jackson" as File
