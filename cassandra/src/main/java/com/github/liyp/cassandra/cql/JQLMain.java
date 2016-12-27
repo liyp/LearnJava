@@ -15,6 +15,8 @@
  */
 package com.github.liyp.cassandra.cql;
 
+import java.util.Date;
+
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Session;
@@ -29,8 +31,8 @@ import com.datastax.driver.core.querybuilder.Using;
  */
 public class JQLMain {
 
-    Cluster cluster = Cluster.builder().addContactPoint("127.0.0.1").build();
-    Session session = cluster.connect();
+    static Cluster cluster = Cluster.builder().addContactPoint("172.31.1.151").build();
+    static Session session = cluster.connect();
 
     void insert(PushAppTask task) {
         Insert insert = QueryBuilder.insertInto("cloud", "push_app_task")
@@ -41,16 +43,21 @@ public class JQLMain {
                 .value("method", task.getMethod())
                 .value("msg_type", task.getMsgType())
                 .value("oa_task_id", task.getOaTaskId())
-                .value("oa_task_type", task.toString())
+                .value("oa_task_type", task.getOaTaskType())
                 .value("payload", task.getPayload())
                 .value("retries", task.getRetries())
                 .value("status_code", task.getStatusCode())
                 .value("time", task.getTime());
-        Using ttlUsing = QueryBuilder.ttl(20);
+        Using ttlUsing = QueryBuilder.ttl(20000);
         Statement statement = insert.using(ttlUsing);
+        System.out.println("## QUERY STRING: \n" + insert.getQueryString());
         System.out.println(statement.toString());
-        ResultSet result = session.execute(statement);
-        System.out.println(result);
+        ResultSet result;
+        result = session.execute(statement);
+        System.out.println(result.getExecutionInfo());
+        result = session.execute(statement.toString());
+        System.out.println(result.wasApplied());
+
     }
 
     public static void main(String[] args) {
@@ -59,6 +66,9 @@ public class JQLMain {
         task.setAccountId(100);
         task.setMsgId("msgId1212");
         task.setStatusCode(0);
+        task.setTime(new Date());
         new JQLMain().insert(task);
+
+        cluster.close();
     }
 }

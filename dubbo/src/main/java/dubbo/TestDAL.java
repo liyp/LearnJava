@@ -13,12 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.liyp.zk;
+package dubbo;
 
-/**
- * 1. 负责连接zk，选举一主多从的模式
- * 2. 为每个节点分配id,各个节点能通过此获取当前节点id和ip，主节点id和ip
- */
-public class ZkManager {
-    
+import java.io.IOException;
+
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class TestDAL {
+    public static void main(String[] args) throws IOException {
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(new String[] { "dubbo/consumer.xml" });
+        context.start();
+
+        context.getBean("dal");
+
+    }
 }

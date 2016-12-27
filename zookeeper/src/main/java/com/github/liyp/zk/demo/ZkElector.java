@@ -15,14 +15,21 @@
  */
 package com.github.liyp.zk.demo;
 
-import org.apache.zookeeper.*;
+import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.apache.zookeeper.CreateMode;
+import org.apache.zookeeper.KeeperException;
+import org.apache.zookeeper.KeeperException.NodeExistsException;
+import org.apache.zookeeper.WatchedEvent;
+import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooDefs.Ids;
+import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.data.Stat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.util.List;
 
 /**
  * ZKManager elects the leader to process OA publishing tasks handler.
@@ -42,8 +49,7 @@ import java.util.List;
  * smallest sequence number such that j < i and n_j is a znode in C;
  */
 public class ZkElector implements Watcher {
-    private static final Logger logger = LoggerFactory
-            .getLogger(ZkElector.class);
+    private static final Logger logger = LoggerFactory.getLogger(ZkElector.class);
 
     /**
      * the root path of push server nodes
@@ -65,8 +71,13 @@ public class ZkElector implements Watcher {
     private String zkAddress;
     private int zkTimeout;
 
+    private AtomicBoolean elected = new AtomicBoolean();
+
+    private TaskServer taskServer = new TaskServer();
+
     public ZkElector(String zkAddress, int zkTimeout) throws IOException {
         this.zookeeper = new ZooKeeper(zkAddress, zkTimeout, this);
+        elected.set(true);
         this.zkAddress = zkAddress;
         this.zkTimeout = zkTimeout;
     }
@@ -93,19 +104,27 @@ public class ZkElector implements Watcher {
                         break;
                     case Expired:
                         logger.info("ZK path {} Expired.", event.getPath());
+
+                            taskServer.shutdown();
                         try {
-                            // shutdown
                             this.zookeeper = new ZooKeeper(zkAddress, zkTimeout, this);
-                            leaderElection();
-                        } catch (KeeperException | InterruptedException e) {
-                            logger.error("ZK path rebuild error.", e);
-                        } catch (Exception e) {
+                            elected.set(true);
+                        } catch (IOException e) {
                             logger.info("{}",this.hashCode(),e);
                         }
                         break;
                     case SyncConnected:
                         logger.info("ZK path {} SyncConnected.", event.getPath());
-
+                        try {
+                            if(elected.get()) {
+                                leaderElection();
+                                elected.set(false);
+                            }
+                        } catch (KeeperException | InterruptedException e) {
+                            logger.error("ZK path rebuild error.", e);
+                        } catch (Exception e) {
+                            logger.info("{}",this.hashCode(),e);
+                        }
                         break;
                     default:
                         logger.info("ZK path {}, state {}", event.getPath(), event.getState());
@@ -120,25 +139,26 @@ public class ZkElector implements Watcher {
         // If is the first client, then it should create the znode "/election"
         Stat stat = zookeeper.exists(ELECTION_PATH, false);
         if (stat == null) {
-            Stat rootStat = zookeeper.exists(ROOT_PATH, false);
-            if (rootStat == null) {
-                logger.info("Initialize root path {}.", ROOT_PATH);
-                String r = zookeeper.create(ROOT_PATH, new byte[0],
-                        Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+            try {
+                Stat rootStat = zookeeper.exists(ROOT_PATH, false);
+                if (rootStat == null) {
+                    logger.info("Initialize root path {}.", ROOT_PATH);
+                    String r = zookeeper.create(ROOT_PATH, new byte[0], Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+                    logger.info("Zookeeper path {} created.", r);
+                }
+                logger.info("In the first client, creating {}.", ELECTION_PATH);
+                String r = zookeeper.create(ELECTION_PATH, new byte[0], Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
                 logger.info("Zookeeper path {} created.", r);
+            } catch (NodeExistsException nee) {
+                logger.warn("Zookeeper path has existed.", nee.getMessage());
             }
-            logger.info("In the first client, creating {}.", ELECTION_PATH);
-            String r = zookeeper.create(ELECTION_PATH, new byte[0],
-                    Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
-            logger.info("Zookeeper path {} created.", r);
         }
 
         // Create znode z with path "ELECTION/n_" with both SEQUENCE and
         // EPHEMERAL flags
         String childPath = ELECTION_PATH + "/n_";
 
-        childPath = zookeeper.create(childPath, new byte[0],
-                Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL_SEQUENTIAL);
+        childPath = zookeeper.create(childPath, new byte[0], Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL_SEQUENTIAL);
         logger.info("My leader proposal created. Path = {}.", childPath);
 
         currentPath = childPath;
@@ -146,8 +166,7 @@ public class ZkElector implements Watcher {
         newLeaderElection();
     }
 
-    public void newLeaderElection()
-            throws KeeperException, InterruptedException {
+    public void newLeaderElection() throws KeeperException, InterruptedException {
 
         // Let C be the children of "ELECTION", and i be the sequence number of
         // znode;
@@ -173,15 +192,47 @@ public class ZkElector implements Watcher {
         // Only the leader starts the scheduled task.
         if (currentPath.equals(leader)) {
             logger.info("Current node is the leader.");
+            taskServer.start();
         } else {
             logger.info("Current node {} is the follower.", currentPath);
         }
     }
 
+    static class TaskServer implements Runnable {
+        AtomicBoolean running = new AtomicBoolean();
+        Thread serverThread;
+        long timestamp = System.currentTimeMillis();
+
+        public void shutdown() {
+            logger.info("TaskServer stop...");
+            running.compareAndSet(true, false);
+        }
+
+        public void start() {
+            running.compareAndSet(false, true);
+            logger.info("TaskServer start...");
+            serverThread = new Thread(this);
+            serverThread.start();
+        }
+
+        @Override
+        public void run() {
+            int i = 0;
+            while(running.get()) {
+                try {
+                    TimeUnit.SECONDS.sleep(1);
+                } catch (InterruptedException ignore) {
+                }
+                if(++i%5 == 0) {
+                    logger.info("TaskServer#{}-{} run ... {}", timestamp, serverThread.hashCode(), i);
+                }
+            }
+        }
+    }
+
     public static void main(String[] args)
             throws IOException, KeeperException, InterruptedException {
-        ZkElector zkElector = new ZkElector("127.0.0.1", 20000);
-        zkElector.leaderElection();
+        ZkElector zkElector = new ZkElector("127.0.0.1", 6000);
         System.in.read();
     }
 
