@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 liyp (liyp.yunpeng@gmail.com)
+ * Copyright © 2017 liyp (liyp.yunpeng@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -79,5 +79,9 @@ public class PlainNioServer {
                 }
             }
         }
+    }
+
+    public static void main(String[] args) throws IOException {
+        serve(5123);
     }
 }

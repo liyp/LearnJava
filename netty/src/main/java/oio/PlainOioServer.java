@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 liyp (liyp.yunpeng@gmail.com)
+ * Copyright © 2017 liyp (liyp.yunpeng@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,22 +32,18 @@ public class PlainOioServer {
             for (; ; ) {
                 final Socket clientSocket = socket.accept();
                 System.out.println("Accepted connection from " + clientSocket);
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        OutputStream out;
+                new Thread(() -> {
+                    OutputStream out;
+                    try {
+                        out = clientSocket.getOutputStream();
+                        out.write("Hi!\n".getBytes(Charset.forName("UTF-8")));
+                        clientSocket.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
                         try {
-                            out = clientSocket.getOutputStream();
-                            out.write("Hi!\n".getBytes(Charset.forName("UTF-8")));
-                            out.flush();
                             clientSocket.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                            try {
-                                clientSocket.close();
-                            } catch (IOException ex) {
-                                // ignore
-                            }
+                        } catch (IOException ex) {
+                            // ignore
                         }
                     }
                 }).start();

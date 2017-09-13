@@ -1,6 +1,0 @@
-
-description = 'kafka'
-dependencies {
-    compile group: 'org.apache.kafka', name: 'kafka-clients', version:'0.8.2.2'
-    compile group: 'org.apache.kafka', name: 'kafka_2.10', version:'0.8.2.2'
-}

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 liyp (liyp.yunpeng@gmail.com)
+ * Copyright © 2017 liyp (liyp.yunpeng@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,8 @@ import io.netty.channel.*;
 import io.netty.channel.oio.OioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.oio.OioServerSocketChannel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.charset.Charset;
 
@@ -29,7 +31,10 @@ import java.nio.charset.Charset;
  * Created by liyunpeng on 12/4/15.
  */
 public class NettyOioServer {
+    private static final Logger logger = LoggerFactory.getLogger(NettyOioServer.class);
+
     public static void serve(int port) throws Exception {
+
         final ByteBuf buf = Unpooled.unreleasableBuffer(Unpooled.copiedBuffer("Hi\n", Charset.forName("UTF-8")));
         EventLoopGroup group = new OioEventLoopGroup();
         try {
@@ -41,6 +46,7 @@ public class NettyOioServer {
                             ch.pipeline().addLast(new ChannelInboundHandlerAdapter() {
                                 @Override
                                 public void channelActive(ChannelHandlerContext ctx) throws Exception {
+                                    logger.info("Accepted connection from {}", ctx.channel().remoteAddress());
                                     ctx.writeAndFlush(buf.duplicate()).addListener(ChannelFutureListener.CLOSE);
                                 }
                             });
