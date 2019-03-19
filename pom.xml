@@ -18,16 +18,13 @@
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <groupId>com.github.liyp</groupId>
     <artifactId>proj-java</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-
     <name>Learn Java and Practice Project</name>
     <description>Learn Java and Practice Project</description>
     <url>https://github.com/liyp/proj-java</url>
-
     <licenses>
         <license>
             <name>Apache License, Version 2.0</name>
@@ -35,7 +32,6 @@
         </license>
     </licenses>
     <inceptionYear>2017</inceptionYear>
-
     <developers>
         <developer>
             <name>liyp</name>
@@ -43,22 +39,20 @@
             <url>http://liyp.me/</url>
         </developer>
     </developers>
-
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <main.basedir>${project.basedir}</main.basedir>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
-
     <modules>
         <!--
         <module>archetype</module>
         -->
-
         <module>akka</module>
         <module>aws-kinesis</module>
         <module>cassandra</module>
+        <module>cassandra2</module>
         <module>dubbo</module>
         <module>guava</module>
         <module>hibernate</module>
@@ -72,27 +66,27 @@
         <module>netty</module>
         <module>owner</module>
         <module>jackson</module>
-    <module>java-basic</module>
-  </modules>
-
-    <dependencies>
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.17</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.7.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>1.7.2</version>
-        </dependency>
-    </dependencies>
-
+        <module>java-basic</module>
+    </modules>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>log4j</groupId>
+                <artifactId>log4j</artifactId>
+                <version>1.2.17</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>1.7.2</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-log4j12</artifactId>
+                <version>1.7.2</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <build>
         <plugins>
             <!--

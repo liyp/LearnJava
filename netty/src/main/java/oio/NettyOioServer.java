@@ -55,7 +55,7 @@ public class NettyOioServer {
             ChannelFuture f = b.bind().sync();
             f.channel().closeFuture().sync();
         } finally {
-            group.shutdownGracefully();
+            group.shutdownGracefully().sync();
         }
     }
 
