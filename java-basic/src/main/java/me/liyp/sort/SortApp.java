@@ -45,6 +45,86 @@ public class SortApp {
     }
 
     // 选择排序
+    private static int[] sort_selection() {
+        int[] ns = NUMBERS.clone();
+
+        for (int i = 0; i < ns.length; i++) {
+            int cmp = ns[i];
+            int cmp_idx = i;
+            for (int j = i+1; j < ns.length; j++) {
+                if (ns[j] < cmp) {
+                    cmp_idx = j;
+                    cmp = ns[j];
+                }
+            }
+            ns[cmp_idx] = ns[i];
+            ns[i] = cmp;
+        }
+
+        return ns;
+    }
+
+    // 堆排序
+    // 1. 最大堆调整 2. 创建最大堆 3. 排序
+    private static int[] sort_heap() {
+        int[] ns = NUMBERS.clone();
+        
+        int from = (ns.length-2) / 2;
+        for (; from>=0; from--) {
+            maxHeap(from, ns.length-1, ns);
+        }
+
+        // 排序
+        for (int i=ns.length-1; i>0; i--) {
+            swap(ns, 0, i);
+            maxHeap(0, i-1, ns);
+        }
+        return ns;
+    }
+
+    // 最大堆调整
+    private static void maxHeap(int idx, int len, int[] ns) {
+        int cl_idx = idx * 2 + 1;
+        int cr_idx = idx * 2 + 2;
+        int max_idx = idx;
+
+        if (cr_idx <= len && ns[cr_idx] > ns[cl_idx]) {
+            max_idx = cr_idx;
+        } else if (cl_idx <= len) {
+            max_idx = cl_idx;
+        }
+
+        // 比较子和父节点的大小
+        // 替换节点后，需要对替换了的子节点递归判断其是否符合堆逻辑
+        if (ns[max_idx] > ns[idx]) {
+            swap(ns, max_idx, idx);
+            maxHeap(max_idx, len, ns);
+        }
+    }
+
+    private static void swap(int[] ns, int l, int r) {
+        int tmp = ns[l];
+        ns[l] = ns[r];
+        ns[r] = tmp;
+    }
+
+
+    // 冒泡排序
+    private static int[] sort_bubble() {
+        int[] ns = NUMBERS.clone();
+
+        for (int i=0; i<ns.length; i++) {
+            for (int j=0; j<ns.length-1-i; j++) {
+                if (ns[j] > ns[j+1]) {
+                    swap(ns, j, j+1);
+                }
+            }
+        }
+        
+        return ns;
+    }
+
+    // 快速排序
 
 
     private static void cmp(String msg, int[] expect, int[] actual) {
@@ -60,6 +140,9 @@ public class SortApp {
         Arrays.sort(ns);
         cmp("insert sort", ns, sort_insert());
         cmp("shell sort", ns, sort_shell());
+        cmp("selection sort", ns, sort_selection());
+        cmp("heap sort", ns, sort_heap());
+        cmp("bubble sort", ns, sort_bubble());
     }
 
 }
