@@ -125,6 +125,30 @@ public class SortApp {
     }
 
     // 快速排序
+    private static int[] sort_quick() {
+        int[] ns = NUMBERS.clone();
+        _quick_sort(ns, 0, ns.length-1);
+        return ns;
+    }
+    private static void _quick_sort(int[] ns, int start, int end) {
+        if (start >= end) {
+            return;
+        }
+        int mid = _quick_mid(ns, start, end);
+        _quick_sort(ns, start, mid-1);
+        _quick_sort(ns, mid+1, end);
+    }
+    private static int _quick_mid(int[] ns, int start, int end) {
+        int tmp = ns[start];
+        for (;start < end;) {
+            for (;start < end && ns[end]>=tmp;end--) {}
+            ns[start] = ns[end];
+            for (;start < end && ns[start]<=tmp;start++) {}
+            ns[end] = ns[start];
+        }
+        ns[start] = tmp;
+        return start;
+    }
 
 
     private static void cmp(String msg, int[] expect, int[] actual) {
@@ -143,6 +167,7 @@ public class SortApp {
         cmp("selection sort", ns, sort_selection());
         cmp("heap sort", ns, sort_heap());
         cmp("bubble sort", ns, sort_bubble());
+        cmp("quick sort", ns, sort_quick());
     }
 
 }
