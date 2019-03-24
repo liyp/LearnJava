@@ -68,7 +68,7 @@ public class SortApp {
     // 1. 最大堆调整 2. 创建最大堆 3. 排序
     private static int[] sort_heap() {
         int[] ns = NUMBERS.clone();
-        
+
         int from = (ns.length-2) / 2;
         for (; from>=0; from--) {
             maxHeap(from, ns.length-1, ns);
@@ -120,11 +120,11 @@ public class SortApp {
                 }
             }
         }
-        
+
         return ns;
     }
 
-    // 快速排序
+    // 快速排序 冒泡+二分+递归分治
     private static int[] sort_quick() {
         int[] ns = NUMBERS.clone();
         _quick_sort(ns, 0, ns.length-1);
@@ -150,6 +150,61 @@ public class SortApp {
         return start;
     }
 
+    // 合并排序
+    private static int[] sort_merge() {
+        int[] ns = NUMBERS.clone();
+        _merge(ns, 0, ns.length-1);
+        return ns;
+    }
+    private static void _merge(int[] ns, int start, int end) {
+        if (start >= end) {
+            return;
+        }
+        int mid = (start + end) / 2;
+        _merge(ns, start, mid);
+        _merge(ns, mid+1, end);
+        int i = start;
+        int j = mid+1;
+        int nss_i = 0;
+        int[] nss = new int[end-start+1];
+        for (;j<=end || i<=mid;) {
+            for (;i<=mid && (j>end || ns[i]<=ns[j]);) {
+                nss[nss_i++] = ns[i++];
+            }
+            for (;j<=end && (i>mid || ns[j]<=ns[i]);){
+                nss[nss_i++] = ns[j++];
+            }
+        }
+        for (nss_i=0; nss_i<nss.length; nss_i++) {
+            ns[nss_i+start] = nss[nss_i];
+        }
+    }
+
+    // 计数排序
+    private static int[] sort_count() {
+        int[] ns = NUMBERS.clone();
+
+        int max = Integer.MIN_VALUE;
+        for (int i : ns) {
+            if (max < i) {
+                max = i;
+            }
+        }
+        int[] count = new int[max+1];
+        for (int i=0; i<ns.length; i++) {
+            count[ns[i]]++;
+        }
+
+        int ii = 0;
+        for (int i=0; i<=max; i++) {
+            for (int j=0; j<count[i]; j++) {
+                ns[ii++] = i;
+            }
+        }
+
+        return ns;
+    }
+
 
     private static void cmp(String msg, int[] expect, int[] actual) {
         System.out.println("#=# " + msg);
@@ -168,6 +223,8 @@ public class SortApp {
         cmp("heap sort", ns, sort_heap());
         cmp("bubble sort", ns, sort_bubble());
         cmp("quick sort", ns, sort_quick());
+        cmp("merge sort", ns, sort_merge());
+        cmp("count sort", ns, sort_count());
     }
 
 }
